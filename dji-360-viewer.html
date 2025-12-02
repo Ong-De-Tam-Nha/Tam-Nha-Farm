@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xem ảnh 360° - DJI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        #panorama {
+            width: 100%;
+            height: 70vh;
+            min-height: 500px;
+            background: #f0f0f0;
+        }
+        
+        .upload-section {
+            padding: 40px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+        
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 60px 40px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            border-color: #764ba2;
+            background: #f8f9ff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .upload-area.dragover {
+            border-color: #764ba2;
+            background: #f0f0ff;
+        }
+        
+        .upload-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .upload-area h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+        
+        .upload-area p {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+        
+        .controls {
+            padding: 30px;
+            background: white;
+            display: none;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .controls.active {
+            display: block;
+        }
+        
+        .controls h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        .control-group {
+            margin-bottom: 20px;
+        }
+        
+        .control-group label {
+            display: block;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            padding: 12px 25px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+        
+        .control-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .instructions {
+            margin-top: 30px;
+            padding: 25px;
+            background: #e8f0fe;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .instructions h4 {
+            color: #333;
+            margin-bottom: 12px;
+        }
+        
+        .instructions ul {
+            list-style-position: inside;
+            color: #555;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 Xem ảnh 360° DJI</h1>
+            <p>Tải lên và khám phá ảnh toàn cảnh của bạn</p>
+        </div>
+        
+        <div id="panorama"></div>
+        
+        <div class="upload-section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📸</div>
+                <h2>Tải lên ảnh 360° của bạn</h2>
+                <p>Kéo thả file vào đây hoặc click để chọn file</p>
+                <button class="btn" onclick="document.getElementById('fileInput').click()">
+                    Chọn file ảnh
+                </button>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+            
+            <div class="instructions">
+                <h4>💡 Hướng dẫn sử dụng:</h4>
+                <ul>
+                    <li>Chấp nhận các định dạng: JPG, PNG</li>
+                    <li>Kéo chuột để xoay và xem xung quanh</li>
+                    <li>Cuộn chuột để zoom in/out</li>
+                    <li>Hoạt động tốt nhất với ảnh equirectangular 360°</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="controls" id="controls">
+            <h3>⚙️ Điều khiển xem</h3>
+            <div class="control-buttons">
+                <button class="control-btn" onclick="resetView()">🔄 Đặt lại góc nhìn</button>
+                <button class="control-btn" onclick="toggleAutoRotate()">🔁 Tự động xoay</button>
+                <button class="control-btn" onclick="toggleFullscreen()">⛶ Toàn màn hình</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let viewer;
+        let autoRotate = false;
+
+        function initViewer(imageUrl) {
+            if (viewer) {
+                viewer.destroy();
+            }
+
+            viewer = pannellum.viewer('panorama', {
+                type: 'equirectangular',
+                panorama: imageUrl,
+                autoLoad: true,
+                showControls: true,
+                showFullscreenCtrl: true,
+                showZoomCtrl: true,
+                mouseZoom: true,
+                draggable: true,
+                friction: 0.15,
+                hfov: 100,
+                pitch: 0,
+                yaw: 0,
+                minHfov: 50,
+                maxHfov: 120
+            });
+
+            document.getElementById('controls').classList.add('active');
+        }
+
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    initViewer(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    initViewer(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function resetView() {
+            if (viewer) {
+                viewer.setPitch(0);
+                viewer.setYaw(0);
+                viewer.setHfov(100);
+            }
+        }
+
+        function toggleAutoRotate() {
+            if (viewer) {
+                autoRotate = !autoRotate;
+                if (autoRotate) {
+                    viewer.setYaw(viewer.getYaw() + 0.1, 1000);
+                    startAutoRotate();
+                }
+            }
+        }
+
+        function startAutoRotate() {
+            if (autoRotate && viewer) {
+                viewer.setYaw(viewer.getYaw() + 0.5);
+                requestAnimationFrame(startAutoRotate);
+            }
+        }
+
+        function toggleFullscreen() {
+            if (viewer) {
+                viewer.toggleFullscreen();
+            }
+        }
+    </script>
+</body>
+</html>
