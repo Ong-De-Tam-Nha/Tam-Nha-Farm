@@ -18,126 +18,32 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            background: #1a1a2e;
         }
         
         #panorama {
             width: 100%;
             height: 100%;
-        }
-        
-        /* Loading overlay */
-        .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #1a1a2e;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            transition: opacity 0.5s ease;
-        }
-        
-        .loading.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255,255,255,0.2);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .loading p {
-            color: white;
-            margin-top: 20px;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-        }
-        
-        /* Custom controls */
-        .custom-controls {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            z-index: 100;
-        }
-        
-        .ctrl-btn {
-            width: 50px;
-            height: 50px;
-            border: none;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.6);
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-        
-        .ctrl-btn:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.1);
-        }
-        
-        .ctrl-btn.active {
-            background: rgba(102, 126, 234, 0.8);
-        }
-        
-        /* Info badge */
-        .info-badge {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.6);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            backdrop-filter: blur(10px);
-            z-index: 100;
-        }
-        
-        /* Hide pannellum default controls - optional */
-        .pnlm-controls-container {
             display: none;
         }
 
-        /* Upload screen */
+        #panorama.active {
+            display: block;
+        }
+        
         .upload-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            background: #1a1a2e;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
         }
 
         .upload-screen.hidden {
             display: none;
         }
 
-        .upload-box {
+        .upload-area {
             text-align: center;
             padding: 60px;
             border: 3px dashed rgba(255,255,255,0.3);
@@ -146,9 +52,14 @@
             transition: all 0.3s ease;
         }
 
-        .upload-box:hover {
+        .upload-area:hover {
             border-color: rgba(255,255,255,0.6);
             background: rgba(255,255,255,0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
         }
 
         .upload-icon {
@@ -156,109 +67,82 @@
             margin-bottom: 20px;
         }
 
-        .upload-box h2 {
+        .upload-area h2 {
             color: white;
             margin-bottom: 10px;
             font-weight: 400;
         }
 
-        .upload-box p {
+        .upload-area p {
             color: rgba(255,255,255,0.6);
             margin-bottom: 30px;
         }
 
-        .upload-btn {
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn {
             background: white;
             color: #1a1a2e;
-            border: none;
             padding: 15px 40px;
+            border: none;
             border-radius: 30px;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .upload-btn:hover {
+        .btn:hover {
             transform: scale(1.05);
         }
 
-        .hidden {
-            display: none !important;
+        .change-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            display: none;
         }
 
-        .custom-controls.hidden {
-            display: none;
+        .change-btn.active {
+            display: block;
+        }
+
+        .change-btn:hover {
+            background: rgba(0,0,0,0.7);
         }
     </style>
 </head>
 <body>
     <div class="upload-screen" id="uploadScreen">
-        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-area" id="uploadArea">
             <div class="upload-icon">🌐</div>
             <h2>Xem ảnh 360°</h2>
-            <p>Chọn hoặc kéo thả ảnh panorama vào đây</p>
-            <button class="upload-btn">Chọn ảnh</button>
-            <input type="file" id="fileInput" accept="image/*" hidden>
+            <p>Kéo thả hoặc chọn ảnh panorama</p>
+            <button class="btn" onclick="document.getElementById('fileInput').click()">
+                Chọn ảnh
+            </button>
+            <input type="file" id="fileInput" accept="image/*">
         </div>
     </div>
 
-    <div class="loading hidden" id="loading">
-        <div class="spinner"></div>
-        <p>Đang tải ảnh 360°...</p>
-    </div>
-    
     <div id="panorama"></div>
     
-    <div class="custom-controls hidden" id="controls">
-        <button class="ctrl-btn" onclick="document.getElementById('fileInput').click()" title="Chọn ảnh khác">📁</button>
-        <button class="ctrl-btn" onclick="zoomIn()" title="Phóng to">+</button>
-        <button class="ctrl-btn" onclick="zoomOut()" title="Thu nhỏ">−</button>
-        <button class="ctrl-btn" onclick="resetView()" title="Đặt lại">↺</button>
-        <button class="ctrl-btn" id="autoRotateBtn" onclick="toggleAutoRotate()" title="Tự động xoay">⟳</button>
-        <button class="ctrl-btn" onclick="toggleFullscreen()" title="Toàn màn hình">⛶</button>
-    </div>
+    <button class="change-btn" id="changeBtn" onclick="document.getElementById('fileInput').click()">
+        📁 Đổi ảnh
+    </button>
 
     <script>
         let viewer;
-        let autoRotate = false;
-        let autoRotateInterval;
-
-        const fileInput = document.getElementById('fileInput');
-        const uploadScreen = document.getElementById('uploadScreen');
-        const loading = document.getElementById('loading');
-        const controls = document.getElementById('controls');
-
-        // Xử lý chọn file
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file && file.type.startsWith('image/')) {
-                loadImage(file);
-            }
-        });
-
-        // Drag & drop
-        document.addEventListener('dragover', function(e) {
-            e.preventDefault();
-        });
-
-        document.addEventListener('drop', function(e) {
-            e.preventDefault();
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                loadImage(file);
-            }
-        });
-
-        function loadImage(file) {
-            uploadScreen.classList.add('hidden');
-            loading.classList.remove('hidden');
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                initViewer(e.target.result);
-            };
-            reader.readAsDataURL(file);
-        }
 
         function initViewer(imageUrl) {
             if (viewer) {
@@ -269,102 +153,53 @@
                 type: 'equirectangular',
                 panorama: imageUrl,
                 autoLoad: true,
-                showControls: false,
-                showFullscreenCtrl: false,
-                showZoomCtrl: false,
+                showControls: true,
+                showFullscreenCtrl: true,
+                showZoomCtrl: true,
                 mouseZoom: true,
                 draggable: true,
                 friction: 0.15,
                 hfov: 100,
                 pitch: 0,
                 yaw: 0,
-                minHfov: 30,
-                maxHfov: 120,
-                compass: false,
-                
-                onLoad: function() {
-                    loading.classList.add('hidden');
-                    controls.classList.remove('hidden');
-                },
-                onError: function(err) {
-                    loading.innerHTML = '<p style="color: #ff6b6b;">❌ Không thể tải ảnh</p>';
-                }
+                minHfov: 50,
+                maxHfov: 120
             });
+
+            document.getElementById('uploadScreen').classList.add('hidden');
+            document.getElementById('panorama').classList.add('active');
+            document.getElementById('changeBtn').classList.add('active');
         }
 
-        // Các hàm điều khiển
-        function zoomIn() {
-            if (viewer) {
-                let hfov = viewer.getHfov();
-                viewer.setHfov(hfov - 10);
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const imageUrl = URL.createObjectURL(file);
+                initViewer(imageUrl);
             }
-        }
+        });
 
-        function zoomOut() {
-            if (viewer) {
-                let hfov = viewer.getHfov();
-                viewer.setHfov(hfov + 10);
-            }
-        }
+        // Drag and drop
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
 
-        function resetView() {
-            if (viewer) {
-                viewer.setPitch(0);
-                viewer.setYaw(0);
-                viewer.setHfov(100);
-            }
-        }
+        uploadArea.addEventListener('dragleave', function(e) {
+            uploadArea.classList.remove('dragover');
+        });
 
-        function toggleAutoRotate() {
-            autoRotate = !autoRotate;
-            const btn = document.getElementById('autoRotateBtn');
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
             
-            if (autoRotate) {
-                btn.classList.add('active');
-                startAutoRotate();
-            } else {
-                btn.classList.remove('active');
-                cancelAnimationFrame(autoRotateInterval);
-            }
-        }
-
-        function startAutoRotate() {
-            if (autoRotate && viewer) {
-                viewer.setYaw(viewer.getYaw() + 0.3);
-                autoRotateInterval = requestAnimationFrame(startAutoRotate);
-            }
-        }
-
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                document.exitFullscreen();
-            }
-        }
-
-        // Keyboard controls
-        document.addEventListener('keydown', function(e) {
-            switch(e.key) {
-                case '+':
-                case '=':
-                    zoomIn();
-                    break;
-                case '-':
-                    zoomOut();
-                    break;
-                case 'r':
-                case 'R':
-                    resetView();
-                    break;
-                case ' ':
-                    toggleAutoRotate();
-                    e.preventDefault();
-                    break;
-                case 'f':
-                case 'F':
-                    toggleFullscreen();
-                    break;
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const imageUrl = URL.createObjectURL(file);
+                initViewer(imageUrl);
             }
         });
     </script>
