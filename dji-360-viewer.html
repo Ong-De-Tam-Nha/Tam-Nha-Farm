@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xem ảnh 360°</title>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.js"></script>
     <style>
@@ -117,21 +118,99 @@
         .pnlm-controls-container {
             display: none;
         }
+
+        /* Upload screen */
+        .upload-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .upload-screen.hidden {
+            display: none;
+        }
+
+        .upload-box {
+            text-align: center;
+            padding: 60px;
+            border: 3px dashed rgba(255,255,255,0.3);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-box:hover {
+            border-color: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .upload-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .upload-box h2 {
+            color: white;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+
+        .upload-box p {
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 30px;
+        }
+
+        .upload-btn {
+            background: white;
+            color: #1a1a2e;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .custom-controls.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="loading" id="loading">
+    <div class="upload-screen" id="uploadScreen">
+        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">🌐</div>
+            <h2>Xem ảnh 360°</h2>
+            <p>Chọn hoặc kéo thả ảnh panorama vào đây</p>
+            <button class="upload-btn">Chọn ảnh</button>
+            <input type="file" id="fileInput" accept="image/*" hidden>
+        </div>
+    </div>
+
+    <div class="loading hidden" id="loading">
         <div class="spinner"></div>
         <p>Đang tải ảnh 360°...</p>
     </div>
     
-    <div class="info-badge">
-        📍 DJI 360° Panorama
-    </div>
-    
     <div id="panorama"></div>
     
-    <div class="custom-controls">
+    <div class="custom-controls hidden" id="controls">
+        <button class="ctrl-btn" onclick="document.getElementById('fileInput').click()" title="Chọn ảnh khác">📁</button>
         <button class="ctrl-btn" onclick="zoomIn()" title="Phóng to">+</button>
         <button class="ctrl-btn" onclick="zoomOut()" title="Thu nhỏ">−</button>
         <button class="ctrl-btn" onclick="resetView()" title="Đặt lại">↺</button>
@@ -144,33 +223,74 @@
         let autoRotate = false;
         let autoRotateInterval;
 
-        // Khởi tạo viewer với ảnh từ Uploadcare
-        viewer = pannellum.viewer('panorama', {
-            type: 'equirectangular',
-            panorama: 'https://github.com/Ong-De-Tam-Nha/Tam-Nha-Farm/blob/main/DJI_20251022104630_0008_D.JPG',
-            autoLoad: true,
-            showControls: false,
-            showFullscreenCtrl: false,
-            showZoomCtrl: false,
-            mouseZoom: true,
-            draggable: true,
-            friction: 0.15,
-            hfov: 100,
-            pitch: 0,
-            yaw: 0,
-            minHfov: 30,
-            maxHfov: 120,
-            compass: false,
-            
-            // Callbacks
-            onLoad: function() {
-                document.getElementById('loading').classList.add('hidden');
-            },
-            onError: function(err) {
-                document.getElementById('loading').innerHTML = 
-                    '<p style="color: #ff6b6b;">❌ Không thể tải ảnh</p>';
+        const fileInput = document.getElementById('fileInput');
+        const uploadScreen = document.getElementById('uploadScreen');
+        const loading = document.getElementById('loading');
+        const controls = document.getElementById('controls');
+
+        // Xử lý chọn file
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                loadImage(file);
             }
         });
+
+        // Drag & drop
+        document.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('drop', function(e) {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                loadImage(file);
+            }
+        });
+
+        function loadImage(file) {
+            uploadScreen.classList.add('hidden');
+            loading.classList.remove('hidden');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                initViewer(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function initViewer(imageUrl) {
+            if (viewer) {
+                viewer.destroy();
+            }
+
+            viewer = pannellum.viewer('panorama', {
+                type: 'equirectangular',
+                panorama: imageUrl,
+                autoLoad: true,
+                showControls: false,
+                showFullscreenCtrl: false,
+                showZoomCtrl: false,
+                mouseZoom: true,
+                draggable: true,
+                friction: 0.15,
+                hfov: 100,
+                pitch: 0,
+                yaw: 0,
+                minHfov: 30,
+                maxHfov: 120,
+                compass: false,
+                
+                onLoad: function() {
+                    loading.classList.add('hidden');
+                    controls.classList.remove('hidden');
+                },
+                onError: function(err) {
+                    loading.innerHTML = '<p style="color: #ff6b6b;">❌ Không thể tải ảnh</p>';
+                }
+            });
+        }
 
         // Các hàm điều khiển
         function zoomIn() {
