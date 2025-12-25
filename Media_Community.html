@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Play | Media Partnership</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- GIỮ NGUYÊN STYLE DARK MODE --- */
+        :root {
+            --primary: #CCFF00;
+            --dark: #0a0a0a;
+            --dark-gray: #1a1a1a;
+            --text: #ffffff;
+            --text-gray: #b3b3b3;
+            --transition: all 0.4s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--dark); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section-padding { padding: 80px 0; }
+        .text-highlight { color: var(--primary); }
+        .btn {
+            display: inline-block; padding: 15px 40px; background: var(--primary); color: var(--dark);
+            font-weight: 800; text-transform: uppercase; border: none; cursor: pointer; transition: var(--transition);
+            clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
+        }
+        .btn:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(204, 255, 0, 0.2); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); display: inline-block; padding: 12px 30px; text-transform: uppercase; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        .btn-outline:hover { background: var(--primary); color: var(--dark); }
+
+        /* --- HEADER --- */
+        .page-header {
+            height: 60vh;
+            /* Ảnh nền: Sân khấu sự kiện hoành tráng */
+            background: linear-gradient(to bottom, rgba(0,0,0,0.5), #0a0a0a), url('https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }
+        .page-header h1 { font-size: 3.5rem; text-transform: uppercase; margin-bottom: 20px; }
+        .breadcrumb { color: var(--text-gray); font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* --- 1. TOURNAMENT CONCEPTS --- */
+        .event-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
+        .event-card {
+            background: var(--dark-gray); border: 1px solid #333; position: relative; overflow: hidden; transition: var(--transition);
+        }
+        .event-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .event-img-box { position: relative; height: 220px; overflow: hidden; }
+        .event-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; filter: grayscale(30%); }
+        .event-card:hover .event-img { transform: scale(1.1); filter: grayscale(0%); }
+        
+        .event-content { padding: 30px; }
+        .event-type { color: var(--primary); font-size: 0.8rem; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
+        .event-title { font-size: 1.5rem; text-transform: uppercase; font-weight: 800; margin: 10px 0; line-height: 1.2; }
+        .event-desc { font-size: 0.9rem; color: #999; margin-bottom: 20px; }
+
+        /* --- 2. COLLAB MODELS (NO PRICE) --- */
+        .collab-section { background: #111; border-top: 1px solid #333; }
+        .collab-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 50px; }
+        .collab-box {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f); padding: 40px 30px; border-radius: 8px; border: 1px solid #333; transition: 0.3s;
+        }
+        .collab-box:hover { border-color: var(--primary); background: #222; }
+        .collab-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 25px; }
+        .collab-title { font-size: 1.3rem; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; }
+        .collab-list { text-align: left; color: #bbb; font-size: 0.95rem; }
+        .collab-list li { margin-bottom: 12px; display: flex; align-items: start; }
+        .collab-list li i { color: var(--primary); margin-right: 12px; margin-top: 5px; font-size: 0.8rem; }
+
+        /* --- 3. AUDIENCE & REACH --- */
+        .reach-stats { 
+            display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 40px; border: 1px solid #333; padding: 40px; border-radius: 10px; background: rgba(255,255,255,0.02);
+        }
+        .stat-block { text-align: center; margin: 20px; }
+        .stat-num { font-size: 3rem; font-weight: 900; color: #fff; line-height: 1; }
+        .stat-label { color: var(--primary); text-transform: uppercase; font-size: 0.9rem; margin-top: 10px; display: block; }
+
+        /* Animation */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 900px) {
+            .collab-grid { grid-template-columns: 1fr; }
+            .page-header h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <div class="container">
+            <p class="breadcrumb">Pillar 04 / Ecosystem</p>
+            <h1>Media & <span class="text-highlight">Events</span></h1>
+            <p style="max-width: 800px; margin: 0 auto; color: #ddd;">
+                Nền tảng tổ chức giải đấu và sản xuất nội dung thể thao chuyên nghiệp. Chúng tôi cung cấp sân khấu, bạn tỏa sáng và phát triển cộng đồng.
+            </p>
+        </div>
+    </header>
+
+    <section class="section-padding">
+        <div class="container">
+            <div class="reveal" style="text-align: center; margin-bottom: 50px;">
+                <h2 style="text-transform: uppercase;">Sân Khấu <span class="text-highlight">Tranh Tài</span></h2>
+                <p style="color: var(--text-gray);">Eco-Play thiết kế sẵn các format giải đấu để đối tác cùng khai thác và vận hành.</p>
+            </div>
+
+            <div class="event-grid reveal">
+                <div class="event-card">
+                    <div class="event-img-box">
+                        <img src="https://images.unsplash.com/photo-1629213568800-410714b9868f?q=80&w=2070&auto=format&fit=crop" class="event-img" alt="Pro League">
+                    </div>
+                    <div class="event-content">
+                        <span class="event-type">Professional Series</span>
+                        <div class="event-title">The Master League</div>
+                        <p class="event-desc">Giải đấu đẳng cấp cao dành cho các tay vợt chuyên nghiệp (Pro) trong và ngoài nước. Nơi quy tụ những trận cầu mãn nhãn nhất.</p>
+                        <ul class="collab-list">
+                            <li><i class="fa-solid fa-play"></i> Tiêu chuẩn luật thi đấu quốc tế (PPA).</li>
+                            <li><i class="fa-solid fa-play"></i> Livestream đa nền tảng chất lượng 4K.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-img-box">
+                        <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2032&auto=format&fit=crop" class="event-img" alt="Corporate">
+                    </div>
+                    <div class="event-content">
+                        <span class="event-type">Enterprise Connect</span>
+                        <div class="event-title">Corporate Cup</div>
+                        <p class="event-desc">Sân chơi kết nối giao thương giữa các Doanh nghiệp & Tập đoàn. Thể thao kết hợp Networking.</p>
+                        <ul class="collab-list">
+                            <li><i class="fa-solid fa-play"></i> Team Building & Văn hóa doanh nghiệp.</li>
+                            <li><i class="fa-solid fa-play"></i> Quảng bá thương hiệu B2B.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-img-box">
+                        <img src="https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=2070&auto=format&fit=crop" class="event-img" alt="Community">
+                    </div>
+                    <div class="event-content">
+                        <span class="event-type">Mass Community</span>
+                        <div class="event-title">City Open</div>
+                        <p class="event-desc">Giải đấu phong trào mở rộng cho mọi lứa tuổi. Ngày hội gia đình và lễ hội thể thao cuối tuần.</p>
+                        <ul class="collab-list">
+                            <li><i class="fa-solid fa-play"></i> Quy mô tham dự lớn (Mass participation).</li>
+                            <li><i class="fa-solid fa-play"></i> Hoạt động bên lề: Ẩm thực, Âm nhạc.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding collab-section">
+        <div class="container">
+            <div class="reveal" style="text-align: center; margin-bottom: 50px;">
+                <h2 style="text-transform: uppercase;">Mô Hình <span class="text-highlight">Hợp Tác</span></h2>
+                <p style="color: var(--text-gray);">Chúng tôi có Hạ tầng & Cộng đồng. Bạn có Chuyên môn & Ý tưởng. Hãy cùng phát triển.</p>
+            </div>
+
+            <div class="collab-grid reveal">
+                <div class="collab-box">
+                    <div class="collab-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                    <div class="collab-title">Đơn Vị Tổ Chức Sự Kiện</div>
+                    <p style="color: #888; margin-bottom: 20px; font-size: 0.9rem;">Dành cho các Agency, Bầu sầu thể thao.</p>
+                    <ul class="collab-list">
+                        <li><i class="fa-solid fa-check"></i> Hợp tác khai thác mặt sân để tổ chức giải.</li>
+                        <li><i class="fa-solid fa-check"></i> Đồng tổ chức (Co-Host) các giải đấu định kỳ.</li>
+                        <li><i class="fa-solid fa-check"></i> Chia sẻ doanh thu vé & phí tham dự.</li>
+                    </ul>
+                </div>
+
+                <div class="collab-box">
+                    <div class="collab-icon"><i class="fa-solid fa-video"></i></div>
+                    <div class="collab-title">Media & Production</div>
+                    <p style="color: #888; margin-bottom: 20px; font-size: 0.9rem;">Dành cho các Production House, Creator.</p>
+                    <ul class="collab-list">
+                        <li><i class="fa-solid fa-check"></i> Bản quyền phát sóng & Livestream giải đấu.</li>
+                        <li><i class="fa-solid fa-check"></i> Sản xuất Content Viral tại sân Eco-Play.</li>
+                        <li><i class="fa-solid fa-check"></i> Hợp tác xây dựng kênh Social (YouTube/TikTok).</li>
+                    </ul>
+                </div>
+
+                <div class="collab-box">
+                    <div class="collab-icon"><i class="fa-solid fa-handshake"></i></div>
+                    <div class="collab-title">Nhà Tài Trợ & Nhãn Hàng</div>
+                    <p style="color: #888; margin-bottom: 20px; font-size: 0.9rem;">Dành cho các thương hiệu muốn tiếp cận khách hàng.</p>
+                    <ul class="collab-list">
+                        <li><i class="fa-solid fa-check"></i> Đặt Booth trưng bày & Activation tại sự kiện.</li>
+                        <li><i class="fa-solid fa-check"></i> Branding trên hệ thống sân bãi & Áo đấu.</li>
+                        <li><i class="fa-solid fa-check"></i> Tài trợ giải thưởng hiện kim/hiện vật.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="reach-stats reveal">
+                <div class="stat-block">
+                    <span class="stat-num">5K+</span>
+                    <span class="stat-label">Vận động viên / Tháng</span>
+                </div>
+                <div class="stat-block">
+                    <span class="stat-num">High</span>
+                    <span class="stat-label">Phân khúc Thu nhập A/B</span>
+                </div>
+                <div class="stat-block">
+                    <span class="stat-num">100%</span>
+                    <span class="stat-label">Khách hàng Thực (Verified)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer style="padding: 50px 0; text-align: center; border-top: 1px solid #333;">
+        <div class="container">
+            <h3 style="margin-bottom: 20px; text-transform: uppercase;">Kết Nối Hợp Tác</h3>
+            <p style="max-width: 600px; margin: 0 auto 30px auto; color: #888;">
+                Chúng tôi sẵn sàng lắng nghe mọi đề xuất hợp tác để cùng nâng tầm Pickleball Việt Nam.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <a href="index.html" class="btn-outline"> <i class="fa-solid fa-house"></i> Về Trang Chủ</a>
+                <a href="#" class="btn">Gửi Hồ Sơ Hợp Tác</a>
+            </div>
+            <p style="margin-top: 40px; color: #666; font-size: 0.8rem;">ECO-PLAY MEDIA STRATEGY © 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', reveal);
+        function reveal() {
+            var reveals = document.querySelectorAll('.reveal');
+            for(var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var revealTop = reveals[i].getBoundingClientRect().top;
+                if(revealTop < windowHeight - 150) reveals[i].classList.add('active');
+            }
+        }
+        reveal();
+    </script>
+</body>
+</html>
