@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Play | Retail & Pro-Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- GIỮ NGUYÊN STYLE DARK MODE --- */
+        :root {
+            --primary: #CCFF00;
+            --dark: #0a0a0a;
+            --dark-gray: #1a1a1a;
+            --text: #ffffff;
+            --text-gray: #b3b3b3;
+            --transition: all 0.4s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--dark); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section-padding { padding: 80px 0; }
+        .text-highlight { color: var(--primary); }
+        .btn {
+            display: inline-block; padding: 15px 40px; background: var(--primary); color: var(--dark);
+            font-weight: 800; text-transform: uppercase; border: none; cursor: pointer; transition: var(--transition);
+            clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
+        }
+        .btn:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(204, 255, 0, 0.2); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); display: inline-block; padding: 12px 30px; text-transform: uppercase; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        .btn-outline:hover { background: var(--primary); color: var(--dark); }
+
+        /* --- HEADER --- */
+        .page-header {
+            height: 60vh;
+            /* Ảnh nền: Kệ trưng bày vợt/giày chuyên nghiệp */
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6), #0a0a0a), url('https://images.unsplash.com/photo-1642104798671-01a4129f4fdc?q=80&w=1817&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }
+        .page-header h1 { font-size: 3.5rem; text-transform: uppercase; margin-bottom: 20px; }
+        .breadcrumb { color: var(--text-gray); font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* --- 1. PRODUCT CATEGORIES (GRID) --- */
+        .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 50px; }
+        .cat-card {
+            background: var(--dark-gray); border: 1px solid #333; padding: 30px; text-align: center; transition: var(--transition);
+        }
+        .cat-card:hover { border-color: var(--primary); transform: translateY(-10px); }
+        .cat-icon { font-size: 3rem; color: var(--primary); margin-bottom: 20px; }
+        .cat-title { font-size: 1.2rem; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
+        .cat-desc { font-size: 0.9rem; color: #888; }
+
+        /* --- 2. PROFIT MODEL (3D CARDS) --- */
+        .profit-section { background: #111; border-top: 1px solid #333; border-bottom: 1px solid #333; }
+        .flip-card { background-color: transparent; height: 420px; perspective: 1000px; cursor: pointer; }
+        .flip-card-inner {
+            position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s; transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; border: 1px solid #333;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;
+        }
+        .flip-card-front { background: var(--dark-gray); }
+        .flip-card-back { background: linear-gradient(135deg, var(--primary) 0%, #aadd00 100%); color: #000; transform: rotateY(180deg); }
+        
+        .profit-stat { font-size: 3.5rem; font-weight: 900; line-height: 1; margin: 15px 0; }
+        .profit-label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        .item-list { text-align: left; width: 100%; margin-top: 20px; font-size: 0.9rem; }
+        .item-list li { border-bottom: 1px solid rgba(0,0,0,0.1); padding: 5px 0; display: flex; justify-content: space-between; }
+
+        /* --- 3. PARTNERS --- */
+        .partners-wrap { background: var(--primary); padding: 20px 0; overflow: hidden; white-space: nowrap; }
+        .marquee { display: inline-block; animation: scroll 20s linear infinite; }
+        .partner-logo { font-size: 1.5rem; font-weight: 900; color: #000; margin: 0 40px; text-transform: uppercase; font-style: italic; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* Animation */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <div class="container">
+            <p class="breadcrumb">Pillar 01 / Ecosystem</p>
+            <h1>Retail & <span class="text-highlight">Pro-Shop</span></h1>
+            <p style="max-width: 700px; margin: 0 auto; color: #ddd;">
+                Hệ thống siêu thị Pickleball chuyên nghiệp: Cung cấp từ vợt thi đấu, trang phục thời trang đến các sản phẩm y tế hỗ trợ phục hồi.
+            </p>
+        </div>
+    </header>
+
+    <section class="section-padding">
+        <div class="container">
+            <div class="reveal" style="text-align: center; margin-bottom: 40px;">
+                <h2 style="text-transform: uppercase;">Hệ Sinh Thái <span class="text-highlight">Sản Phẩm</span></h2>
+                <p style="color: var(--text-gray);">Đáp ứng mọi nhu cầu của người chơi từ nghiệp dư đến chuyên nghiệp.</p>
+            </div>
+
+            <div class="category-grid reveal">
+                <div class="cat-card">
+                    <div class="cat-icon"><i class="fa-solid fa-table-tennis-paddle-ball"></i></div>
+                    <h3 class="cat-title">Equipment</h3>
+                    <p class="cat-desc">Vợt (Paddles), Bóng thi đấu chuẩn, Lưới & Cột di động. Phân phối chính hãng Joola, Selkirk.</p>
+                </div>
+
+                <div class="cat-card">
+                    <div class="cat-icon"><i class="fa-solid fa-shirt"></i></div>
+                    <h3 class="cat-title">Apparel & Shoes</h3>
+                    <p class="cat-desc">Quần áo thi đấu thoáng khí, Giày chuyên dụng bám sân, Mũ & Băng tay thể thao.</p>
+                </div>
+
+                <div class="cat-card">
+                    <div class="cat-icon"><i class="fa-solid fa-notes-medical"></i></div>
+                    <h3 class="cat-title">Recovery</h3>
+                    <p class="cat-desc">Dầu nóng, Miếng dán giảm đau, Băng keo cơ, Thực phẩm bổ sung năng lượng.</p>
+                </div>
+
+                <div class="cat-card">
+                    <div class="cat-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+                    <h3 class="cat-title">Accessories</h3>
+                    <p class="cat-desc">Túi đựng vợt, Ba lô, Bình nước giữ nhiệt, Quấn cán vợt (Grips).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="profit-section section-padding">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 60px;" class="reveal">
+                <h2 style="text-transform: uppercase;">Chiến Lược <span class="text-highlight">Dòng Tiền</span></h2>
+                <p style="color: var(--text-gray);">Rê chuột vào thẻ để xem phân tích biên lợi nhuận (Gross Margin)</p>
+            </div>
+
+            <div class="category-grid"> <div class="flip-card reveal">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <i class="fa-solid fa-certificate" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+                            <h3>Hàng Chính Hãng</h3>
+                            <p style="color: #888;">Global Brands Distribution</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3>Phân Phối</h3>
+                            <div class="profit-stat">30%</div>
+                            <div class="profit-label">Biên Lợi Nhuận</div>
+                            <ul class="item-list">
+                                <li><span>Vợt Joola/Selkirk</span> <strong>Cao</strong></li>
+                                <li><span>Giày chuyên dụng</span> <strong>Trung bình</strong></li>
+                                <li><span>Rủi ro tồn kho</span> <strong>Thấp</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <i class="fa-solid fa-industry" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+                            <h3>Hàng Nhãn Riêng</h3>
+                            <p style="color: #888;">Eco-Play Private Label</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3>Sản Xuất (OEM)</h3>
+                            <div class="profit-stat">60%</div>
+                            <div class="profit-label">Biên Lợi Nhuận</div>
+                            <ul class="item-list">
+                                <li><span>Quần áo thi đấu</span> <strong>Siêu cao</strong></li>
+                                <li><span>Túi & Phụ kiện</span> <strong>Cao</strong></li>
+                                <li><span>Kiểm soát giá</span> <strong>100%</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <i class="fa-solid fa-boxes-packing" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+                            <h3>Vật Tư Tiêu Hao</h3>
+                            <p style="color: #888;">Doanh thu lặp lại (Recurring)</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3>Tiêu Dùng</h3>
+                            <div class="profit-stat">45%</div>
+                            <div class="profit-label">Biên Lợi Nhuận</div>
+                            <ul class="item-list">
+                                <li><span>Bóng (Thay liên tục)</span> <strong>Ổn định</strong></li>
+                                <li><span>Quấn cán vợt</span> <strong>Cao</strong></li>
+                                <li><span>Dầu/Miếng dán</span> <strong>Cao</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="partners-wrap">
+        <div class="marquee">
+            <span class="partner-logo">JOOLA</span>
+            <span class="partner-logo">SELKIRK</span>
+            <span class="partner-logo">FRANKLIN</span>
+            <span class="partner-logo">HEAD</span>
+            <span class="partner-logo">ADIDAS</span>
+            <span class="partner-logo">NIKE</span>
+            <span class="partner-logo">WILSON</span>
+            <span class="partner-logo">JOOLA</span>
+            <span class="partner-logo">SELKIRK</span>
+            <span class="partner-logo">FRANKLIN</span>
+            <span class="partner-logo">HEAD</span>
+        </div>
+    </div>
+
+    <footer style="padding: 50px 0; text-align: center; border-top: 1px solid #333;">
+        <div class="container">
+            <h3 style="margin-bottom: 20px; text-transform: uppercase;">Tiếp Tục Khám Phá</h3>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <a href="index.html" class="btn-outline"> <i class="fa-solid fa-arrow-left"></i> Về Trang Chủ</a>
+                <a href="#" class="btn-outline">Trụ Cột Tiếp Theo: Infra <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <p style="margin-top: 40px; color: #666; font-size: 0.8rem;">ECO-PLAY RETAIL STRATEGY © 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', reveal);
+        function reveal() {
+            var reveals = document.querySelectorAll('.reveal');
+            for(var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var revealTop = reveals[i].getBoundingClientRect().top;
+                if(revealTop < windowHeight - 150) reveals[i].classList.add('active');
+            }
+        }
+        reveal();
+    </script>
+</body>
+</html>

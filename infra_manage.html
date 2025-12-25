@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Play | Infrastructure & Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- GIỮ NGUYÊN STYLE DARK MODE --- */
+        :root {
+            --primary: #CCFF00;
+            --dark: #0a0a0a;
+            --dark-gray: #1a1a1a;
+            --text: #ffffff;
+            --text-gray: #b3b3b3;
+            --transition: all 0.4s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--dark); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section-padding { padding: 80px 0; }
+        .text-highlight { color: var(--primary); }
+        .btn {
+            display: inline-block; padding: 15px 40px; background: var(--primary); color: var(--dark);
+            font-weight: 800; text-transform: uppercase; border: none; cursor: pointer; transition: var(--transition);
+            clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
+        }
+        .btn:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(204, 255, 0, 0.2); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); display: inline-block; padding: 12px 30px; text-transform: uppercase; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        .btn-outline:hover { background: var(--primary); color: var(--dark); }
+
+        /* --- HEADER --- */
+        .page-header {
+            height: 60vh;
+            /* Ảnh nền: Sân Pickleball ban đêm nhìn từ trên cao, đèn sáng trưng */
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), #0a0a0a), url('https://images.unsplash.com/photo-1626245347640-5231c20171e2?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }
+        .page-header h1 { font-size: 3.5rem; text-transform: uppercase; margin-bottom: 20px; }
+        .breadcrumb { color: var(--text-gray); font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* --- 1. INFRA STANDARD (GRID) --- */
+        .infra-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 50px; }
+        .spec-card {
+            background: var(--dark-gray); border: 1px solid #333; padding: 0; overflow: hidden; transition: var(--transition);
+        }
+        .spec-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+        .spec-img { width: 100%; height: 200px; object-fit: cover; filter: grayscale(50%); transition: 0.5s; }
+        .spec-card:hover .spec-img { filter: grayscale(0%); }
+        .spec-content { padding: 30px; }
+        .spec-title { font-size: 1.5rem; text-transform: uppercase; margin-bottom: 15px; color: #fff; }
+        .spec-list li { margin-bottom: 10px; display: flex; align-items: center; color: #ccc; }
+        .spec-list li i { color: var(--primary); margin-right: 10px; }
+
+        /* --- 2. LOCATION MAP (CONCEPT) --- */
+        .location-section { background: #111; position: relative; }
+        .map-container { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center;
+        }
+        .location-list .loc-item {
+            display: flex; align-items: center; margin-bottom: 30px; padding: 20px; background: rgba(255,255,255,0.05); border-left: 4px solid var(--primary);
+        }
+        .loc-number { font-size: 2rem; font-weight: 900; color: var(--primary); margin-right: 20px; }
+        
+        /* --- 3. TECH MANAGEMENT (AUTO OPS) --- */
+        .tech-ops { text-align: center; }
+        .tech-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 50px; }
+        .tech-box { 
+            background: var(--dark-gray); padding: 40px 20px; border-radius: 10px; border: 1px solid #333; position: relative;
+        }
+        .tech-box:hover { background: #222; }
+        .tech-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; }
+        .step-line {
+            position: absolute; top: 50%; right: -10px; width: 20px; height: 2px; background: #444; z-index: 1;
+        }
+        .tech-box:last-child .step-line { display: none; }
+
+        /* Animation */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 768px) {
+            .page-header h1 { font-size: 2.5rem; }
+            .map-container, .tech-grid { grid-template-columns: 1fr; }
+            .step-line { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <div class="container">
+            <p class="breadcrumb">Pillar 02 / Ecosystem</p>
+            <h1>Infra & <span class="text-highlight">Management</span></h1>
+            <p style="max-width: 700px; margin: 0 auto; color: #ddd;">
+                Chuẩn hóa sân bãi quốc tế kết hợp công nghệ vận hành tự động hóa (Automated Operations). Giải quyết bài toán lãng phí giờ trống và tối ưu nhân sự.
+            </p>
+        </div>
+    </header>
+
+    <section class="section-padding">
+        <div class="container">
+            <div class="reveal" style="text-align: center; margin-bottom: 50px;">
+                <h2 style="text-transform: uppercase;">Tiêu Chuẩn <span class="text-highlight">Hạ Tầng</span></h2>
+                <p style="color: var(--text-gray);">Khác biệt hoàn toàn với các sân tự phát, Eco-Play mang đến trải nghiệm thi đấu đỉnh cao.</p>
+            </div>
+
+            <div class="infra-grid reveal">
+                <div class="spec-card">
+                    <!-- <img src="https://pickleballbuilders.com/wp-content/uploads/2023/04/Pickleball-Court-Construction-Companies.jpg" class="spec-img" alt="Surface"> -->
+                    <div class="spec-content">
+                        <h3 class="spec-title">Mặt Sân 7 Lớp</h3>
+                        <ul class="spec-list">
+                            <li><i class="fa-solid fa-check"></i> Công nghệ Acrylic giảm chấn thương.</li>
+                            <li><i class="fa-solid fa-check"></i> Độ nảy bóng chuẩn thi đấu PPA.</li>
+                            <li><i class="fa-solid fa-check"></i> Chống trơn trượt khi độ ẩm cao.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="spec-card">
+                    <!-- <img src="https://pro-tents.com/media/pages/branchen/sport/tennis/tennis-halle-pe-structure-buchen-odenwald/3f827a4d5e-1678198904/tennishalle-pe-structures-buchen-5-1200x800.jpg" class="spec-img" alt="Roof"> -->
+                    <div class="spec-content">
+                        <h3 class="spec-title">Mái Che All-Weather</h3>
+                        <ul class="spec-list">
+                            <li><i class="fa-solid fa-check"></i> Thiết kế thoáng khí, đón gió tự nhiên.</li>
+                            <li><i class="fa-solid fa-check"></i> Thi đấu bất chấp mưa nắng (Tăng 30% doanh thu).</li>
+                            <li><i class="fa-solid fa-check"></i> Chiều cao mái >8m chuẩn quốc tế.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="spec-card">
+                    <!-- <img src="https://frasurecrep.com/wp-content/uploads/2023/06/Pickleball-Lighting.jpg" class="spec-img" alt="Lighting"> -->
+                    <div class="spec-content">
+                        <h3 class="spec-title">LED Chống Lóa</h3>
+                        <ul class="spec-list">
+                            <li><i class="fa-solid fa-check"></i> Hệ thống LED chuyên dụng thể thao.</li>
+                            <li><i class="fa-solid fa-check"></i> Không gây chói mắt khi smash bóng.</li>
+                            <li><i class="fa-solid fa-check"></i> Phân bổ ánh sáng đều, không góc tối.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding" style="background: #111; border-top: 1px solid #333;">
+        <div class="container tech-ops">
+            <div class="reveal">
+                <h2 style="text-transform: uppercase;">Vận Hành <span class="text-highlight">Tự Động Hóa</span></h2>
+                <p style="color: var(--text-gray);">Mô hình "No-Touch" giúp giảm 70% chi phí nhân sự vận hành.</p>
+            </div>
+
+            <div class="tech-grid reveal">
+                <div class="tech-box">
+                    <div class="tech-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                    <h4>1. Booking App</h4>
+                    <p style="font-size: 0.9rem; color: #888; margin-top: 10px;">Khách đặt sân, chọn giờ và thanh toán 100% qua App.</p>
+                    <div class="step-line"></div>
+                </div>
+
+                <div class="tech-box">
+                    <div class="tech-icon"><i class="fa-solid fa-qrcode"></i></div>
+                    <h4>2. QR Check-in</h4>
+                    <p style="font-size: 0.9rem; color: #888; margin-top: 10px;">Quét mã tại cổng. Cửa tự mở, không cần lễ tân.</p>
+                    <div class="step-line"></div>
+                </div>
+
+                <div class="tech-box">
+                    <div class="tech-icon"><i class="fa-regular fa-lightbulb"></i></div>
+                    <h4>3. Smart Lighting</h4>
+                    <p style="font-size: 0.9rem; color: #888; margin-top: 10px;">Đèn sân chỉ bật sáng đúng khung giờ khách đã đặt.</p>
+                    <div class="step-line"></div>
+                </div>
+
+                <div class="tech-box">
+                    <div class="tech-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                    <h4>4. AI Analytics</h4>
+                    <p style="font-size: 0.9rem; color: #888; margin-top: 10px;">Báo cáo doanh thu Real-time và tỷ lệ lấp đầy sân.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding location-section">
+        <div class="container">
+            <div class="map-container reveal">
+                <div>
+                    <h2 style="text-transform: uppercase; margin-bottom: 30px;">Vị Trí Dự Kiến<span class="text-highlight">Trọng Điểm</span></h2>
+                    <p style="margin-bottom: 40px; color: #ccc;">Chiến lược "Vết Dầu Loang": Tập trung phủ sóng tại các điểm nóng có cộng đồng thể thao phát triển mạnh nhất TP.HCM.</p>
+                    
+                    <div class="location-list">
+                        <div class="loc-item">
+                            <span class="loc-number">01</span>
+                            <div>
+                                <h4 style="text-transform: uppercase;">Thảo Điền (TP. Thủ Đức)</h4>
+                                <p style="font-size: 0.9rem; color: #888;">Cộng đồng Expats và giới thượng lưu. Giá thuê giờ cao nhất.</p>
+                            </div>
+                        </div>
+                        <div class="loc-item">
+                            <span class="loc-number">02</span>
+                            <div>
+                                <h4 style="text-transform: uppercase;">Phú Mỹ Hưng (Q.7)</h4>
+                                <p style="font-size: 0.9rem; color: #888;">Cộng đồng gia đình trẻ & người Hàn Quốc. Nhu cầu tập luyện lớn.</p>
+                            </div>
+                        </div>
+                        <div class="loc-item">
+                            <span class="loc-number">03</span>
+                            <div>
+                                <h4 style="text-transform: uppercase;">Bình Thạnh / Q.1</h4>
+                                <p style="font-size: 0.9rem; color: #888;">Khu vực trung tâm, thuận tiện di chuyển, lấp đầy các khung giờ hành chính.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="width: 100%; height: 400px; position: relative; border-radius: 10px; overflow: hidden; border: 1px solid #333;">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d251637.95196238213!2d105.61890453342363!3d10.754666395353066!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529292e8d3dd1%3A0xf15f5aad773c112b!2zVGjDoG5oIHBo4buRIEjhu5MgQ2jDrSBNaW5oLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1710925000000!5m2!1svi!2s" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0; filter: invert(90%) hue-rotate(180deg) contrast(90%);" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                    
+                    <div style="position: absolute; top: 40%; left: 55%; color: var(--primary); font-size: 24px; text-shadow: 0 0 10px var(--primary);"><i class="fa-solid fa-location-dot"></i></div>
+                    <div style="position: absolute; top: 60%; left: 50%; color: var(--primary); font-size: 24px; text-shadow: 0 0 10px var(--primary);"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer style="padding: 50px 0; text-align: center; border-top: 1px solid #333;">
+        <div class="container">
+            <h3 style="margin-bottom: 20px; text-transform: uppercase;">Tiếp Tục Khám Phá</h3>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <a href="index.html" class="btn-outline"> <i class="fa-solid fa-arrow-left"></i> Về Trang Chủ</a>
+                <a href="#" class="btn-outline">Trụ Cột Tiếp Theo: Health <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <p style="margin-top: 40px; color: #666; font-size: 0.8rem;">ECO-PLAY INFRASTRUCTURE STRATEGY © 2025</p>
+        </div>
+    </footer>
+
+    <style>
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(204, 255, 0, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(204, 255, 0, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(204, 255, 0, 0); }
+        }
+    </style>
+
+    <script>
+        window.addEventListener('scroll', reveal);
+        function reveal() {
+            var reveals = document.querySelectorAll('.reveal');
+            for(var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var revealTop = reveals[i].getBoundingClientRect().top;
+                if(revealTop < windowHeight - 150) reveals[i].classList.add('active');
+            }
+        }
+        reveal();
+    </script>
+</body>
+</html>
