@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Play | Health & Wellness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- GIỮ NGUYÊN STYLE DARK MODE ĐỂ ĐỒNG BỘ --- */
+        :root {
+            --primary: #CCFF00;
+            --dark: #0a0a0a;
+            --dark-gray: #1a1a1a;
+            --text: #ffffff;
+            --text-gray: #b3b3b3;
+            --transition: all 0.4s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--dark); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section-padding { padding: 80px 0; }
+        .text-highlight { color: var(--primary); }
+        .btn {
+            display: inline-block; padding: 15px 40px; background: var(--primary); color: var(--dark);
+            font-weight: 800; text-transform: uppercase; border: none; cursor: pointer; transition: var(--transition);
+            clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
+        }
+        .btn:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(204, 255, 0, 0.2); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); display: inline-block; padding: 12px 30px; text-transform: uppercase; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        .btn-outline:hover { background: var(--primary); color: var(--dark); }
+
+        /* --- HEADER --- */
+        .page-header {
+            height: 60vh;
+            /* Ảnh nền: Người chơi đang được chăm sóc cơ/dán băng */
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6), #0a0a0a), url('https://images.unsplash.com/photo-1522898467493-49726bf28798?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }
+        .page-header h1 { font-size: 3.5rem; text-transform: uppercase; margin-bottom: 20px; }
+        .breadcrumb { color: var(--text-gray); font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* --- 1. PRODUCT LINE (GRID) --- */
+        .product-section { background: var(--dark-gray); }
+        .prod-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 50px; }
+        .prod-card {
+            background: #111; border: 1px solid #333; padding: 30px; position: relative; overflow: hidden; transition: var(--transition);
+        }
+        .prod-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .prod-badge {
+            position: absolute; top: 20px; right: 20px; background: var(--primary); color: #000; padding: 5px 15px; font-weight: bold; font-size: 0.8rem; border-radius: 4px;
+        }
+        .prod-icon { font-size: 3rem; color: #fff; margin-bottom: 20px; }
+        .prod-stats { 
+            margin-top: 20px; padding-top: 20px; border-top: 1px solid #333; display: flex; justify-content: space-between; font-size: 0.9rem;
+        }
+        .stat-value { color: var(--primary); font-weight: bold; }
+
+        /* --- 2. SERVICE MODEL (SPLIT) --- */
+        .service-split { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 60px; }
+        .service-img { width: 100%; border-radius: 10px; filter: grayscale(30%); border: 1px solid #333; }
+        .service-list li { margin-bottom: 20px; display: flex; align-items: start; }
+        .service-list li i { color: var(--primary); margin-right: 15px; margin-top: 5px; }
+
+        /* --- 3. PARTNERSHIP (LOGOS) --- */
+        .clinic-partners { text-align: center; background: #111; border-top: 1px solid #333; }
+        .partner-grid { display: flex; justify-content: center; gap: 50px; flex-wrap: wrap; margin-top: 40px; }
+        .clinic-logo { font-size: 1.5rem; font-weight: 700; color: #666; text-transform: uppercase; border: 2px solid #333; padding: 15px 30px; transition: 0.3s; }
+        .clinic-logo:hover { color: #fff; border-color: var(--primary); background: #222; }
+
+        /* Animation */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 768px) {
+            .page-header h1 { font-size: 2.5rem; }
+            .service-split { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <div class="container">
+            <p class="breadcrumb">Pillar 03 / Ecosystem</p>
+            <h1>Health & <span class="text-highlight">Wellness</span></h1>
+            <p style="max-width: 700px; margin: 0 auto; color: #ddd;">
+                Hệ thống chăm sóc sức khỏe chuyên biệt cho người chơi thể thao. Tối ưu hóa doanh thu từ sản phẩm y tế và dịch vụ phục hồi chức năng.
+            </p>
+        </div>
+    </header>
+
+    <section class="section-padding product-section">
+        <div class="container">
+            <div class="reveal" style="text-align: center; margin-bottom: 50px;">
+                <h2 style="text-transform: uppercase;">Sản Phẩm <span class="text-highlight">Tiêu Hao</span></h2>
+                <p style="color: var(--text-gray);">Dòng tiền quay vòng nhanh (Fast-moving) từ nhu cầu thiết yếu của người chơi.</p>
+            </div>
+
+            <div class="prod-grid reveal">
+                <div class="prod-card">
+                    <span class="prod-badge">HOT SALES</span>
+                    <div class="prod-icon"><i class="fa-solid fa-spray-can"></i></div>
+                    <h3>Eco-Spray Pro</h3>
+                    <p style="color: #888; font-size: 0.9rem;">Bình xịt lạnh giảm đau tức thì. Sản phẩm không thể thiếu trong túi đồ mọi vợt thủ.</p>
+                    <div class="prod-stats">
+                        <span>Biên Lợi Nhuận:</span>
+                        <span class="stat-value">55%</span>
+                    </div>
+                </div>
+
+                <div class="prod-card">
+                    <span class="prod-badge">OEM</span>
+                    <div class="prod-icon"><i class="fa-solid fa-bandage"></i></div>
+                    <h3>Muscle Tape</h3>
+                    <p style="color: #888; font-size: 0.9rem;">Băng dán cơ (Kinesiology Tape) thương hiệu riêng. Hỗ trợ vận động, chống chấn thương.</p>
+                    <div class="prod-stats">
+                        <span>Biên Lợi Nhuận:</span>
+                        <span class="stat-value">65%</span>
+                    </div>
+                </div>
+
+                <div class="prod-card">
+                    <span class="prod-badge">RECURRING</span>
+                    <div class="prod-icon"><i class="fa-solid fa-bottle-droplet"></i></div>
+                    <h3>Recovery Gel</h3>
+                    <p style="color: #888; font-size: 0.9rem;">Gel nóng giãn cơ sau tập luyện. Khách hàng mua lại định kỳ hàng tháng.</p>
+                    <div class="prod-stats">
+                        <span>Tỷ lệ Mua lại:</span>
+                        <span class="stat-value">Cao</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding">
+        <div class="container">
+            <div class="service-split reveal">
+                <img src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?q=80&w=1974&auto=format&fit=crop" class="service-img" alt="Physiotherapy">
+                
+                <div class="service-content">
+                    <h2 style="text-transform: uppercase; margin-bottom: 30px;">Trạm Phục Hồi <span class="text-highlight">Recovery Zone</span></h2>
+                    <p style="margin-bottom: 30px; color: #ccc;">
+                        Hợp tác với các phòng khám uy tín để đặt trạm sơ cứu và trị liệu ngay tại sân. Chia sẻ doanh thu (Revenue Sharing) mà không tốn chi phí nhân sự y tế cố định.
+                    </p>
+                    
+                    <ul class="service-list">
+                        <li>
+                            <i class="fa-solid fa-user-doctor"></i>
+                            <div>
+                                <strong>Vật lý trị liệu tại chỗ</strong>
+                                <p style="font-size: 0.9rem; color: #888;">Xử lý chấn thương phần mềm, giãn cơ sau thi đấu (Booking theo giờ).</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-temperature-arrow-down"></i>
+                            <div>
+                                <strong>Ngâm đá (Ice Bath) & Massage</strong>
+                                <p style="font-size: 0.9rem; color: #888;">Dịch vụ cao cấp dành cho VĐV chuyên nghiệp và khách VIP.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-id-card"></i>
+                            <div>
+                                <strong>Gói Bảo Hiểm Eco-Care</strong>
+                                <p style="font-size: 0.9rem; color: #888;">Bán kèm thẻ thành viên. Bảo đảm chi phí điều trị nếu xảy ra chấn thương tại sân.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding clinic-partners">
+        <div class="container reveal">
+            <h2 style="text-transform: uppercase;">Mạng Lưới <span class="text-highlight">Đối Tác</span></h2>
+            <p style="color: var(--text-gray);">Chúng tôi không làm một mình. Chúng tôi hợp tác với những đơn vị đầu ngành.</p>
+            
+            <div class="partner-grid">
+                <div class="clinic-logo">ACC CHIROPRACTIC</div>
+                <div class="clinic-logo">TAM ANH HOSPITAL</div>
+                <div class="clinic-logo">DR. SPORTS</div>
+                <div class="clinic-logo">STAR BALM</div>
+            </div>
+        </div>
+    </section>
+
+    <footer style="padding: 50px 0; text-align: center; border-top: 1px solid #333;">
+        <div class="container">
+            <h3 style="margin-bottom: 20px; text-transform: uppercase;">Tiếp Tục Khám Phá</h3>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <a href="index.html" class="btn-outline"> <i class="fa-solid fa-arrow-left"></i> Về Trang Chủ</a>
+                <a href="#" class="btn-outline">Trụ Cột Cuối: Media <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <p style="margin-top: 40px; color: #666; font-size: 0.8rem;">ECO-PLAY HEALTH BUSINESS STRATEGY © 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', reveal);
+        function reveal() {
+            var reveals = document.querySelectorAll('.reveal');
+            for(var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var revealTop = reveals[i].getBoundingClientRect().top;
+                if(revealTop < windowHeight - 150) reveals[i].classList.add('active');
+            }
+        }
+        reveal();
+    </script>
+</body>
+</html>
