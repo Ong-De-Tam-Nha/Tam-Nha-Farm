@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WS READER - RFID Scanner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            color: #00d4ff;
+        }
+
+        .status-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff4757;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected {
+            background: #2ed573;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            font-size: 1rem;
+            color: #a0a0a0;
+        }
+
+        .device-name {
+            font-size: 1.2rem;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff4757 0%, #cc0033 100%);
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .current-value {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .current-value label {
+            display: block;
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .current-value .value {
+            font-size: 1.5rem;
+            font-family: 'Courier New', monospace;
+            color: #00d4ff;
+            word-break: break-all;
+            min-height: 40px;
+        }
+
+        .history-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .history-header h3 {
+            font-size: 1rem;
+            color: #a0a0a0;
+        }
+
+        .btn-clear {
+            background: transparent;
+            border: 1px solid #a0a0a0;
+            color: #a0a0a0;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-clear:hover {
+            border-color: #ff4757;
+            color: #ff4757;
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .history-item .tag-id {
+            font-family: 'Courier New', monospace;
+            color: #2ed573;
+            font-size: 0.95rem;
+        }
+
+        .history-item .timestamp {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .debug-section {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .debug-section summary {
+            cursor: pointer;
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        .debug-log {
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            color: #888;
+            line-height: 1.6;
+        }
+
+        .debug-log .error {
+            color: #ff4757;
+        }
+
+        .debug-log .success {
+            color: #2ed573;
+        }
+
+        .debug-log .info {
+            color: #00d4ff;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .service-selector {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .service-selector label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a0a0a0;
+            font-size: 0.85rem;
+        }
+
+        .service-selector input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .service-selector input::placeholder {
+            color: #666;
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📡 WS READER - RFID Scanner</h1>
+
+        <div class="status-card">
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <div>
+                    <div class="device-name" id="deviceName">Chưa kết nối</div>
+                    <div class="status-text" id="statusText">Nhấn nút bên dưới để kết nối</div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="connectBtn" onclick="connectToDevice()">
+                🔗 Kết nối WS READER
+            </button>
+            <button class="btn btn-danger" id="disconnectBtn" onclick="disconnect()" style="display: none;">
+                ❌ Ngắt kết nối
+            </button>
+
+            <div class="service-selector">
+                <label>Service UUID (tùy chọn):</label>
+                <input type="text" id="serviceUuid" placeholder="VD: 0000fff0-0000-1000-8000-00805f9b34fb">
+                <div class="hint">Để trống nếu không biết, hệ thống sẽ tự động tìm</div>
+            </div>
+        </div>
+
+        <div class="current-value">
+            <label>Giá trị RFID hiện tại</label>
+            <div class="value" id="currentValue">---</div>
+        </div>
+
+        <div class="history-section">
+            <div class="history-header">
+                <h3>📋 Lịch sử quét</h3>
+                <button class="btn-clear" onclick="clearHistory()">Xóa tất cả</button>
+            </div>
+            <div class="history-list" id="historyList">
+                <div class="empty-state">Chưa có dữ liệu quét</div>
+            </div>
+        </div>
+
+        <details class="debug-section">
+            <summary>🔧 Debug Log</summary>
+            <div class="debug-log" id="debugLog"></div>
+        </details>
+    </div>
+
+    <script>
+        let device = null;
+        let server = null;
+        let characteristic = null;
+        let history = [];
+
+        // Common BLE Service UUIDs for RFID readers
+        const COMMON_SERVICE_UUIDS = [
+            '0000fff0-0000-1000-8000-00805f9b34fb',
+            '0000ffe0-0000-1000-8000-00805f9b34fb',
+            '6e400001-b5a3-f393-e0a9-e50e24dcca9e', // Nordic UART
+            '0000180f-0000-1000-8000-00805f9b34fb', // Battery Service
+            '00001800-0000-1000-8000-00805f9b34fb', // Generic Access
+            '00001801-0000-1000-8000-00805f9b34fb', // Generic Attribute
+        ];
+
+        // Common Characteristic UUIDs
+        const COMMON_CHAR_UUIDS = [
+            '0000fff1-0000-1000-8000-00805f9b34fb',
+            '0000fff2-0000-1000-8000-00805f9b34fb',
+            '0000ffe1-0000-1000-8000-00805f9b34fb',
+            '6e400003-b5a3-f393-e0a9-e50e24dcca9e', // Nordic UART TX
+        ];
+
+        function log(message, type = 'info') {
+            const debugLog = document.getElementById('debugLog');
+            const time = new Date().toLocaleTimeString();
+            debugLog.innerHTML += `<div class="${type}">[${time}] ${message}</div>`;
+            debugLog.scrollTop = debugLog.scrollHeight;
+            console.log(`[${type}] ${message}`);
+        }
+
+        function updateStatus(connected, deviceName = '', statusText = '') {
+            const statusDot = document.getElementById('statusDot');
+            const deviceNameEl = document.getElementById('deviceName');
+            const statusTextEl = document.getElementById('statusText');
+            const connectBtn = document.getElementById('connectBtn');
+            const disconnectBtn = document.getElementById('disconnectBtn');
+
+            if (connected) {
+                statusDot.classList.add('connected');
+                deviceNameEl.textContent = deviceName;
+                statusTextEl.textContent = statusText;
+                connectBtn.style.display = 'none';
+                disconnectBtn.style.display = 'block';
+            } else {
+                statusDot.classList.remove('connected');
+                deviceNameEl.textContent = 'Chưa kết nối';
+                statusTextEl.textContent = 'Nhấn nút bên dưới để kết nối';
+                connectBtn.style.display = 'block';
+                disconnectBtn.style.display = 'none';
+            }
+        }
+
+        async function connectToDevice() {
+            if (!navigator.bluetooth) {
+                alert('Trình duyệt của bạn không hỗ trợ Web Bluetooth. Vui lòng sử dụng Chrome hoặc Edge.');
+                log('Web Bluetooth không được hỗ trợ', 'error');
+                return;
+            }
+
+            try {
+                log('Đang tìm kiếm thiết bị BLE...', 'info');
+                
+                const customServiceUuid = document.getElementById('serviceUuid').value.trim();
+                
+                let options = {
+                    filters: [
+                        { namePrefix: 'WS' },
+                        { namePrefix: 'READER' },
+                        { namePrefix: 'RFID' },
+                        { namePrefix: 'BLE' },
+                    ],
+                    optionalServices: customServiceUuid 
+                        ? [customServiceUuid, ...COMMON_SERVICE_UUIDS]
+                        : COMMON_SERVICE_UUIDS
+                };
+
+                // Try with filters first, fallback to acceptAllDevices
+                try {
+                    device = await navigator.bluetooth.requestDevice(options);
+                } catch (e) {
+                    log('Thử tìm tất cả thiết bị...', 'info');
+                    device = await navigator.bluetooth.requestDevice({
+                        acceptAllDevices: true,
+                        optionalServices: customServiceUuid 
+                            ? [customServiceUuid, ...COMMON_SERVICE_UUIDS]
+                            : COMMON_SERVICE_UUIDS
+                    });
+                }
+
+                log(`Đã chọn thiết bị: ${device.name || 'Unknown'}`, 'success');
+
+                device.addEventListener('gattserverdisconnected', onDisconnected);
+
+                log('Đang kết nối GATT Server...', 'info');
+                server = await device.gatt.connect();
+                log('Đã kết nối GATT Server', 'success');
+
+                // Discover services
+                log('Đang tìm services...', 'info');
+                const services = await server.getPrimaryServices();
+                log(`Tìm thấy ${services.length} services`, 'info');
+
+                let foundCharacteristic = null;
+
+                for (const service of services) {
+                    log(`Service: ${service.uuid}`, 'info');
+                    
+                    try {
+                        const characteristics = await service.getCharacteristics();
+                        
+                        for (const char of characteristics) {
+                            log(`  Characteristic: ${char.uuid}`, 'info');
+                            log(`    Properties: notify=${char.properties.notify}, read=${char.properties.read}, write=${char.properties.write}`, 'info');
+                            
+                            // Look for notify characteristic (most RFID readers use this)
+                            if (char.properties.notify && !foundCharacteristic) {
+                                foundCharacteristic = char;
+                                log(`  ✓ Sử dụng characteristic này để nhận dữ liệu`, 'success');
+                            }
+                        }
+                    } catch (e) {
+                        log(`  Không thể đọc characteristics: ${e.message}`, 'error');
+                    }
+                }
+
+                if (!foundCharacteristic) {
+                    throw new Error('Không tìm thấy characteristic phù hợp để nhận dữ liệu');
+                }
+
+                characteristic = foundCharacteristic;
+
+                // Start notifications
+                await characteristic.startNotifications();
+                characteristic.addEventListener('characteristicvaluechanged', handleData);
+                log('Đã bắt đầu lắng nghe dữ liệu', 'success');
+
+                updateStatus(true, device.name || 'WS READER', 'Đang lắng nghe dữ liệu RFID...');
+
+            } catch (error) {
+                log(`Lỗi: ${error.message}`, 'error');
+                if (error.name === 'NotFoundError') {
+                    alert('Không tìm thấy thiết bị hoặc người dùng đã hủy.');
+                } else {
+                    alert(`Lỗi kết nối: ${error.message}`);
+                }
+                updateStatus(false);
+            }
+        }
+
+        function handleData(event) {
+            const value = event.target.value;
+            
+            // Try different data parsing methods
+            let rfidData = '';
+            
+            // Method 1: As UTF-8 string
+            const decoder = new TextDecoder('utf-8');
+            const textValue = decoder.decode(value);
+            
+            // Method 2: As hex string
+            const hexValue = Array.from(new Uint8Array(value.buffer))
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('').toUpperCase();
+            
+            // Method 3: As decimal array
+            const decValue = Array.from(new Uint8Array(value.buffer)).join('-');
+
+            // Use text if printable, otherwise use hex
+            const isPrintable = /^[\x20-\x7E]+$/.test(textValue);
+            rfidData = isPrintable ? textValue.trim() : hexValue;
+
+            log(`Nhận dữ liệu: Text="${textValue}" | Hex=${hexValue} | Dec=${decValue}`, 'success');
+
+            // Update current value display
+            document.getElementById('currentValue').textContent = rfidData || hexValue;
+
+            // Add to history
+            addToHistory(rfidData || hexValue);
+
+            // Play sound notification
+            playBeep();
+        }
+
+        function addToHistory(tagId) {
+            const timestamp = new Date().toLocaleString('vi-VN');
+            history.unshift({ tagId, timestamp });
+
+            // Keep only last 50 items
+            if (history.length > 50) {
+                history.pop();
+            }
+
+            updateHistoryUI();
+        }
+
+        function updateHistoryUI() {
+            const historyList = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<div class="empty-state">Chưa có dữ liệu quét</div>';
+                return;
+            }
+
+            historyList.innerHTML = history.map((item, index) => `
+                <div class="history-item">
+                    <span class="tag-id">${item.tagId}</span>
+                    <span class="timestamp">${item.timestamp}</span>
+                </div>
+            `).join('');
+        }
+
+        function clearHistory() {
+            history = [];
+            updateHistoryUI();
+            document.getElementById('currentValue').textContent = '---';
+            log('Đã xóa lịch sử', 'info');
+        }
+
+        function onDisconnected() {
+            log('Thiết bị đã ngắt kết nối', 'error');
+            updateStatus(false);
+            characteristic = null;
+            server = null;
+        }
+
+        async function disconnect() {
+            if (characteristic) {
+                try {
+                    await characteristic.stopNotifications();
+                } catch (e) {
+                    log(`Lỗi dừng notifications: ${e.message}`, 'error');
+                }
+            }
+
+            if (device && device.gatt.connected) {
+                device.gatt.disconnect();
+            }
+
+            log('Đã ngắt kết nối', 'info');
+            updateStatus(false);
+        }
+
+        function playBeep() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.value = 1000;
+                oscillator.type = 'sine';
+                gainNode.gain.value = 0.3;
+
+                oscillator.start();
+                setTimeout(() => {
+                    oscillator.stop();
+                    audioContext.close();
+                }, 100);
+            } catch (e) {
+                // Ignore audio errors
+            }
+        }
+
+        // Check Web Bluetooth support on load
+        window.addEventListener('load', () => {
+            if (!navigator.bluetooth) {
+                log('⚠️ Web Bluetooth không được hỗ trợ trên trình duyệt này', 'error');
+                document.getElementById('connectBtn').disabled = true;
+                document.getElementById('connectBtn').textContent = 'Không hỗ trợ Web Bluetooth';
+            } else {
+                log('✓ Web Bluetooth được hỗ trợ', 'success');
+            }
+        });
+    </script>
+</body>
+</html>
