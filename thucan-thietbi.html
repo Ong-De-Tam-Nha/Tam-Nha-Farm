@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Sinh Thái Nông Nghiệp Khép Kín</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Quicksand:wght@400;500;600&display=swap');
+
+        :root {
+            --leaf: #2d6a4f;
+            --soil: #603808;
+            --sun: #ffb703;
+            --water: #0077b6;
+            --bg-light: #f1f8e9;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            background-color: var(--bg-light);
+            color: #333;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+        /* --- Custom Navigation --- */
+        nav {
+            background: rgba(45, 106, 79, 0.95);
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        nav a { color: white; text-decoration: none; font-weight: 600; margin-left: 20px; }
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1920') center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 10px; }
+        .hero p { font-size: 1.2rem; max-width: 700px; }
+
+        /* --- The Ecosystem Loop (Hệ sinh thái tuần hoàn) --- */
+        .section { padding: 80px 10%; }
+        .section-title { text-align: center; margin-bottom: 50px; }
+        .section-title h2 { font-size: 2.5rem; color: var(--leaf); }
+
+        .loop-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            position: relative;
+        }
+
+        .loop-item {
+            background: white;
+            padding: 30px;
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 4px dashed var(--leaf);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+        .loop-item b { color: var(--soil); font-size: 1.2rem; }
+
+        /* --- Nutrition Section --- */
+        .diet-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .diet-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            display: flex;
+        }
+        .diet-img { width: 40%; background-size: cover; background-position: center; }
+        .diet-content { padding: 30px; width: 60%; }
+        .tag { background: var(--bg-light); color: var(--leaf); padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: bold; }
+
+        /* --- Hardware & Tech --- */
+        .tech-section {
+            background: var(--leaf);
+            color: white;
+            border-radius: 50px 50px 0 0;
+        }
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .tech-card {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            border-left: 5px solid var(--sun);
+        }
+
+        /* --- Housing Design --- */
+        .housing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .house-box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 30px;
+            position: relative;
+            border: 1px solid #ddd;
+        }
+        .house-box.private { border: 2px solid var(--sun); background: #fffdf5; }
+        .house-box h3 { margin-top: 0; color: var(--soil); }
+
+        footer { text-align: center; padding: 40px; background: var(--soil); color: white; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .diet-grid, .housing-grid { grid-template-columns: 1fr; }
+            .diet-card { flex-direction: column; }
+            .diet-img { width: 100%; height: 200px; }
+            .diet-content { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div style="font-family: 'Playfair Display'; font-size: 1.5rem; color: var(--sun);">GreenLoop Farm</div>
+    <div>
+        <a href="#ecosystem">Hệ Sinh Thái</a>
+        <a href="#diet">Dinh Dưỡng</a>
+        <a href="#tech">Công Nghệ</a>
+        <a href="#housing">Chuồng Trại</a>
+    </div>
+</nav>
+
+<section class="hero">
+    <h1>Hệ Sinh Thái Thông Minh</h1>
+    <p>Sự kết hợp hoàn hảo giữa nông nghiệp tuần hoàn và công nghệ IoT, tối ưu hóa nguồn lực và bảo vệ môi trường.</p>
+    <a href="#ecosystem" style="margin-top:20px; background: var(--sun); color: var(--soil); padding: 15px 30px; border-radius: 30px; text-decoration: none; font-weight: bold;">Khám phá ngay</a>
+</section>
+
+<section class="section" id="ecosystem">
+    <div class="section-title">
+        <span class="tag">CIRCULAR ECONOMY</span>
+        <h2>Vòng Lặp Tuần Hoàn</h2>
+        <p>Không có rác thải trong hệ thống của chúng tôi</p>
+    </div>
+    <div class="loop-container">
+        <div class="loop-item"><b>Thỏ</b><p>Ăn rau lang, lá chuối</p></div>
+        <div style="font-size: 2rem;">➔</div>
+        <div class="loop-item"><b>Phân Thỏ</b><p>Thức ăn cho cá tra</p></div>
+        <div style="font-size: 2rem;">➔</div>
+        <div class="loop-item"><b>Cá Tra</b><p>Thức ăn cho Chồn</p></div>
+        <div style="font-size: 2rem;">➔</div>
+        <div class="loop-item"><b>Chồn Hương</b><p>Sản phẩm thương phẩm</p></div>
+    </div>
+</section>
+
+<section class="section" id="diet" style="background: #fdfdfd;">
+    <div class="section-title">
+        <h2>Chế Độ Dinh Dưỡng</h2>
+    </div>
+    <div class="diet-grid">
+        <div class="diet-card">
+            <div class="diet-img" style="background-image: url('https://images.unsplash.com/photo-1585110396054-c8112790a3e3?auto=format&fit=crop&q=80&w=400');"></div>
+            <div class="diet-content">
+                <span class="tag">RABBIT</span>
+                <h3>Nuôi Thỏ</h3>
+                <p>Thực đơn chính: Rau lang tươi, lá chuối vườn. Đảm bảo chất xơ và vitamin tự nhiên.</p>
+            </div>
+        </div>
+        <div class="diet-card">
+            <div class="diet-img" style="background-image: url('https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&q=80&w=400');"></div>
+            <div class="diet-content">
+                <span class="tag">CIVET</span>
+                <h3>Nuôi Chồn</h3>
+                <p>Thực đơn đa dạng: Cá tra (từ ao nhà), ếch đồng và trái chuối chín thơm.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section tech-section" id="tech">
+    <div class="section-title">
+        <h2 style="color: var(--sun);">Năng Lượng & Giám Sát</h2>
+    </div>
+    <div class="tech-grid">
+        <div class="tech-card">
+            <h3>Solar Energy</h3>
+            <p>Hệ thống bơm rửa chuồng trại vận hành hoàn toàn bằng năng lượng mặt trời. Tiết kiệm 100% chi phí điện vận hành.</p>
+        </div>
+        <div class="tech-card">
+            <h3>AI Camera</h3>
+            <p>Giám sát từng khu vực riêng biệt. Tích hợp nhận diện hành vi để phát hiện sớm các dấu hiệu sức khỏe bất thường.</p>
+        </div>
+        <div class="tech-card">
+            <h3>Smart Irrigation</h3>
+            <p>Hệ thống tưới tự động cho vườn rau lang và chuối, sử dụng nước sau khi đã qua xử lý từ ao cá.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="housing">
+    <div class="section-title">
+        <h2>Thiết Kế Chuồng Trại</h2>
+    </div>
+    <div class="housing-grid">
+        <div class="house-box">
+            <h3>Kiểu Truyền Thống</h3>
+            <p>Dành cho chồn thương phẩm và chồn hậu bị. Thông thoáng, dễ vệ sinh và tối ưu diện tích.</p>
+            <ul>
+                <li>Lưới Inox 304 chống rỉ</li>
+                <li>Hệ thống thoát phân tự động</li>
+            </ul>
+        </div>
+        <div class="house-box private">
+            <div class="tag" style="position:absolute; top:20px; right:20px; background: var(--sun);">VIP DESIGN</div>
+            <h3>Khu Vực Sinh Sản</h3>
+            <p>Thiết kế riêng tư biệt lập, giảm thiểu tiếng ồn và ánh sáng mạnh. Giúp chồn cái an tâm chăm sóc con.</p>
+            <ul>
+                <li>Vách ngăn cách âm nhẹ</li>
+                <li>Ổ đẻ mô phỏng hang hốc tự nhiên</li>
+                <li>Camera quan sát đêm hồng ngoại</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2026 Eco-Farm Tech. Developed for Sustainable Agriculture.</p>
+</footer>
+
+</body>
+</html>
