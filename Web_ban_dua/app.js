@@ -4,8 +4,8 @@
 
 // Configuration - Thay đổi số điện thoại và Zalo tại đây
 const CONFIG = {
-    phone: '0123456789',
-    zalo: '0123456789',
+    phone: '0913771336',
+    zalo: '0913771336',
     email: 'contact@dedua.vn'
 };
 
